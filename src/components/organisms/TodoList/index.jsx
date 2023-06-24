@@ -1,3 +1,5 @@
+import styles from "./styles.module.css";
+
 export const TodoList = (props) => {
   /*
     props(↓)は TodoTemplate(src/components/templates/TodoTemplate/index.jsx)から渡ってくる
@@ -18,3 +20,16 @@ export const TodoList = (props) => {
     </ul>
   )
 }
+
+/**
+ * @エラー
+ * 6/25
+ *
+ * [NG]
+ * export const TodoList = (props) => {
+ *
+ * [OK]
+ * import styles from "./styles.module.css";
+ *
+ * export const TodoList = (props) => {
+ */

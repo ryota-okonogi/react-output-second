@@ -1,10 +1,10 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import './index.css'
-import { Todopage } from './pages/todo'
+import React from "react";
+import ReactDOM from "react-dom/client";
+import { TodoPage } from "./pages/todo";
+import "./index.css";
 
-ReactDOM.createRoot(document.getElementById('root')).render(
+ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <Todopage />
+    <TodoPage />
   </React.StrictMode>
-)
+);

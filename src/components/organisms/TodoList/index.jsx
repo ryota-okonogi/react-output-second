@@ -8,18 +8,19 @@ export const TodoList = (props) => {
   */
 
   // ↓propsであることを定義
-  const { todoList } = props;
+  const { todoList, handleDeleteTodo } = props;
 
   return (
     <ul className={styles.list}>
       {todoList.map((todo) => (
         <li key={todo.id} className={styles.todo}>
-          <span className={styles.task} >{todo.title}</span>
+          <span className={styles.task}>{todo.title}</span>
+          <button onClick={() => handleDeleteTodo(todo.id, todo.title)}>-</button>
         </li>
       ))}
     </ul>
-  )
-}
+  );
+};
 
 /**
  * @エラー
@@ -32,4 +33,14 @@ export const TodoList = (props) => {
  * import styles from "./styles.module.css";
  *
  * export const TodoList = (props) => {
+ */
+
+/**
+ * 削除の実装
+ *
+ * ＜List.jsx＞
+ * 削除用のpropsを用意する
+ * 押したボタンのIDを削除用のpropsの引数に渡す
+ * 削除用のボタンを用意する(ゴミ箱アイコン)
+ *
  */

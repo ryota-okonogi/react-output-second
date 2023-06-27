@@ -2,7 +2,7 @@ import { useState } from "react";
 import { InputForm } from "../../atoms/InputForm";
 import { AddTodo } from "../../organisms/AddTodo";
 import { TodoList } from "../../organisms/TodoList";
-import { searchTodo } from "../../../utils/todoLogic.ts"
+import { searchTodo } from "../../../utils/todoLogic";
 import { INIT_TODO_LIST, INIT_UNIQUE_ID } from "../../../constants/data.js";
 import styles from "./styles.module.css";
 
@@ -22,20 +22,23 @@ export const TodoTemplate = () => {
   // 更新後のTodoList
   const [ showTodoList, setShowTodoList ] = useState(INIT_TODO_LIST);
 
+  // addInputValueの変更処理(onChangeAddInputValue)
+  const onChangeAddInputValue = (e) => {
+    setAddInputValue(e.target.value);
+  }
+
   // 表示用Todoリスト更新処理
   const updateShowTodoList = (newTodoList, keyword) => {
     setShowTodoList(
-      /*
-      keywordが入力されている場合
-       = searchTodoに(newTodoList, keyword)を渡した処理結果を表示する
-      そうでない場合 = newTodoListを表示する
-      */
       keyword !== "" ? searchTodo(newTodoList, keyword) : newTodoList
     );
   };
 
-  // addInputValueの変更処理(onChangeAddInputValue)
-  const onChangeAddInputValue = (e) => setAddInputValue(e.target.value);
+  /*
+  keywordが入力されている場合
+    = searchTodoに(newTodoList, keyword)を渡した処理結果を表示する
+  そうでない場合 = newTodoListを表示する
+  */
 
   // Todo新規登録処理(handleAddTodo)
   const handleAddTodo = (e) => {
@@ -59,7 +62,7 @@ export const TodoTemplate = () => {
       // 採番IDを更新 ← 更新用関数のsetUniqueIdで、元の配列の要素数 + 1 する
       setUniqueId(nextUniqueId);
       // todo追加後、入力値をリセット
-      setAddInputValue("") // 入力したタイトルを追加する処理に空文字を入れることで「入力値をリセット」することが可能になる
+      setAddInputValue(""); // 入力したタイトルを追加する処理に空文字を入れることで「入力値をリセット」することが可能になる
     }
   };
 
@@ -79,7 +82,7 @@ export const TodoTemplate = () => {
     setSearchKeyword(keyword);
 
     updateShowTodoList(originTodoList, keyword);
-  }
+  };
 
   return (
     <div className={styles.container}>
@@ -101,8 +104,8 @@ export const TodoTemplate = () => {
       <section className={styles.common}>
         {showTodoList.length > 0 && (
           <TodoList
-          todoList={showTodoList}
-          handleDeleteTodo={handleDeleteTodo}
+            todoList={showTodoList}
+            handleDeleteTodo={handleDeleteTodo}
           />
         )}
       </section>

@@ -1,6 +1,6 @@
 import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import styles from "./styles.module.css";
+import styles from "./style.module.css";
 
 export const TodoList = (props) => {
   /*

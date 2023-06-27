@@ -4,7 +4,7 @@ import { AddTodo } from "../../organisms/AddTodo";
 import { TodoList } from "../../organisms/TodoList";
 import { searchTodo } from "../../../utils/todoLogic";
 import { INIT_TODO_LIST, INIT_UNIQUE_ID } from "../../../constants/data.js";
-import styles from "./styles.module.css";
+import styles from "./style.module.css";
 
 export const TodoTemplate = () => {
   // 元のTodoList

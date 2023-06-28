@@ -1,8 +1,7 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { InputForm } from "../../atoms/InputForm";
 import { AddTodo } from "../../organisms/AddTodo";
 import { TodoList } from "../../organisms/TodoList";
-import { searchTodo } from "../../../utils/todoLogic";
 import { INIT_TODO_LIST, INIT_UNIQUE_ID } from "../../../constants/data.js";
 import styles from "./style.module.css";
 
@@ -20,25 +19,28 @@ export const TodoTemplate = () => {
   const [ searchKeyword, setSearchKeyword ] = useState("");
 
   // 更新後のTodoList
-  const [ showTodoList, setShowTodoList ] = useState(INIT_TODO_LIST);
-
-  // addInputValueの変更処理(onChangeAddInputValue)
-  const onChangeAddInputValue = (e) => {
-    setAddInputValue(e.target.value);
-  }
-
-  // 表示用Todoリスト更新処理
-  const updateShowTodoList = (newTodoList, keyword) => {
-    setShowTodoList(
-      keyword !== "" ? searchTodo(newTodoList, keyword) : newTodoList
-    );
-  };
+  const showTodoList = useMemo(() => {
+    return originTodoList.filter((todo) => { // propsのtodoListからtodo配列を生成し、そこから条件を付けてfilterする
+      const regexp = new RegExp("^" + searchKeyword, "i"); // Regexpメソッドの引数に前方一致検索の条件を渡す
+      return todo.title.match(regexp); // todoのタイトルが前方一致検索の条件と一致するか照合する
+    });
+  }, [originTodoList, searchKeyword]);
 
   /*
-  keywordが入力されている場合
-    = searchTodoに(newTodoList, keyword)を渡した処理結果を表示する
-  そうでない場合 = newTodoListを表示する
+  useMemoの第二引数([originTodoList, searchKeyword])に依存して処理が実行される
+  originTodoListとsearchKeywordの値が変更される度にfilterの検索処理が実行
+  ただし結果が前回と同じならキャッシュを返却し処理は実行されない(無駄な処理を省いている)
   */
+ /**
+  * ＜リファクタメモ＞
+  * useMemoを使ってメモ化することでsetShowTodoListを含むstate管理が要らなくなる
+  * setShowTodoListを使用しているupdateShowTodoListを含むコードは全て削除する
+  * showTodoListがstateから関数になり、その処理内容に検索処理を定義するため、
+  * src/utils/todoLogic.ts は削除する。
+  */
+
+  // addInputValueの変更処理(onChangeAddInputValue)
+  const onChangeAddInputValue = (e) => setAddInputValue(e.target.value);
 
   // Todo新規登録処理(handleAddTodo)
   const handleAddTodo = (e) => {
@@ -56,9 +58,6 @@ export const TodoTemplate = () => {
       ];
       setOriginTodoList(newTodoList); // 新規登録によって追加したTodoを含めたものを新たな配列として生成する
 
-      // Todo追加処理に検索キーワードを当てはめて更新後のTodoListを表示する
-      updateShowTodoList(newTodoList, searchKeyword)
-
       // 採番IDを更新 ← 更新用関数のsetUniqueIdで、元の配列の要素数 + 1 する
       setUniqueId(nextUniqueId);
       // todo追加後、入力値をリセット
@@ -71,18 +70,11 @@ export const TodoTemplate = () => {
     if (window.confirm(`「${targetTitle}」のtodoを削除しますか？`)) {
       const newTodoList = originTodoList.filter((todo) => todo.id !== targetId);
       setOriginTodoList(newTodoList);
-
-      updateShowTodoList(newTodoList, searchKeyword);
     }
   };
 
-  // 検索処理
-  const handleSearchTodo = (e) => {
-    const keyword = e.target.value;
-    setSearchKeyword(keyword);
-
-    updateShowTodoList(originTodoList, keyword);
-  };
+  // 検索キーワード更新処理
+  const handleChangeSearchKeyword = (e) => setSearchKeyword(e.target.value);
 
   return (
     <div className={styles.container}>
@@ -98,7 +90,7 @@ export const TodoTemplate = () => {
         <InputForm
           inputValue={searchKeyword}
           placeholder={"Search Keyword"}
-          handleChangeValue={handleSearchTodo}
+          handleChangeValue={handleChangeSearchKeyword}
         />
       </section>
       <section className={styles.common}>
